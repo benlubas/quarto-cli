@@ -1,0 +1,37 @@
+---
+title: "UA-1 inline image missing alt text"
+pdf-standard: ua-1
+keep-tex: true
+keep-typ: true
+_quarto:
+  tests:
+    run:
+      # verapdf validation not available on Windows CI
+      not_os: windows
+    pdf:
+      noErrors: default
+      ensureLatexFileRegexMatches:
+        - ['\\DocumentMetadata\{', 'pdfstandard=\{ua-1\}', 'tagging=on']
+        - []
+      printsMessage:
+        level: WARN
+        regex: "PDF accessibility:"
+      # NOTE: verapdf passes because LaTeX's tagging=on doesn't create proper
+      # structure elements for inline images. This is a LaTeX limitation.
+    typst:
+      # Typst correctly errors at compile time for missing alt text
+      shouldError: default
+      printsMessage:
+        level: ERROR
+        regex: "missing alt text"
+---
+
+# Test Document
+
+This inline image has no alt text.
+
+- **Typst**: Correctly errors at compile time ("PDF/UA-1 error: missing alt text")
+- **LaTeX**: Warns about missing alt text but verapdf passes because `tagging=on`
+  doesn't create proper Figure structure elements for inline images
+
+![](test-image.png)
