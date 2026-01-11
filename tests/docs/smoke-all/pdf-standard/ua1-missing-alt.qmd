@@ -34,4 +34,4 @@ This inline image has no alt text.
 - **LaTeX**: Warns about missing alt text but verapdf passes because `tagging=on`
   doesn't create proper Figure structure elements for inline images
 
-![](test-image.png)
+![](penrose.svg)
