@@ -63,6 +63,20 @@
     maybeArrayOf: path
   description: "One or more CSS style sheets."
 
+- name: anchor-click
+  schema:
+    enum: [jump, copy, copy-and-jump]
+  default: jump
+  tags:
+    formats: [$html-doc]
+  description:
+    short: "Change behavior when clicking on a section anchor."
+    long: |
+      Change behavior when clicking on a section anchor.
+      - `jump` (default): navigate to anchor destination
+      - `copy`: copy the destination to clipboard, don't change the window location
+      - `jump-and-copy`: navigate to the destination, and copy it to clipboard
+
 - name: anchor-sections
   schema: boolean
   default: true

@@ -37,6 +37,7 @@ import { normalizePath } from "../../core/path.ts";
 export const kTabsets = "tabsets";
 export const kCodeCopy = "code-copy";
 export const kAnchorSections = "anchor-sections";
+export const kAnchorClick = "anchor-click";
 export const kCitationsHover = "citations-hover";
 export const kFootnotesHover = "footnotes-hover";
 export const kXrefsHover = "crossrefs-hover";

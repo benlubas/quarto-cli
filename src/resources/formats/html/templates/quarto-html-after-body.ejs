@@ -1,4 +1,4 @@
-<% if (darkMode !== undefined || tabby || anchors || copyCode || codeTools || tippy || hoverFootnotes || hoverCitations || linkExternalIcon || linkExternalNewwindow || hoverXrefs || sectionCollapse) { %> 
+<% if (darkMode !== undefined || tabby || anchors || copyCode || codeTools || tippy || hoverFootnotes || hoverCitations || linkExternalIcon || linkExternalNewwindow || hoverXrefs || sectionCollapse || anchorClick) { %> 
   <script id = "quarto-html-after-body" type="application/javascript">
   
   
@@ -34,7 +34,51 @@
     });
   
     <% } %>
-  
+
+    <% if (copyCode || anchorClick !== "jump") { %>
+
+    const onCopySuccess = function(pos) {
+      return function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "<%- language['copy-button-tooltip-success'] %>");
+
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", pos);
+          button.setAttribute("data-bs-title", "<%- language['copy-button-tooltip-success'] %>");
+
+          tooltip = new bootstrap.Tooltip(button,
+            { trigger: "manual",
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();
+        }
+
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+    }
+
+    <% } %>
+
+
     <% if (anchors) { %>
   
     const icon = "<%= anchors === true ? '' : anchors %>";
@@ -44,6 +88,24 @@
       icon: icon
     };
     anchorJS.add('.anchored');
+
+    <% if (anchorClick !== "jump") { %>
+
+    const anchorClipboard = new window.ClipboardJS('.anchorjs-link', {
+      text: (el) => window.location.origin + window.location.pathname + el.attributes.href.value,
+    });
+    anchorClipboard.on('success', onCopySuccess("right"));
+
+      <% if (anchorClick == "copy") { %>
+        document.querySelectorAll(".anchorjs-link").forEach(el => {
+          el.addEventListener("click", event => {
+            event.preventDefault();
+          });
+        });
+      <% } %>
+
+    <% } %>
+
     <% } %>
   
     <% if (copyCode) { %>
@@ -56,45 +118,7 @@
       }
       return false;
     }
-  
-    const onCopySuccess = function(e) {
-      // button target
-      const button = e.trigger;
-      // don't keep focus
-      button.blur();
-      // flash "checked"
-      button.classList.add('code-copy-button-checked');
-      var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "<%- language['copy-button-tooltip-success'] %>");
-  
-  
-      let tooltip;
-      if (window.bootstrap) {
-        button.setAttribute("data-bs-toggle", "tooltip");
-        button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "<%- language['copy-button-tooltip-success'] %>");
-  
-        tooltip = new bootstrap.Tooltip(button, 
-          { trigger: "manual", 
-            customClass: "code-copy-button-tooltip",
-            offset: [0, -8]});
-        tooltip.show();    
-      }
-  
-      setTimeout(function() {
-        if (tooltip) {
-          tooltip.hide();
-          button.removeAttribute("data-bs-title");
-          button.removeAttribute("data-bs-toggle");
-          button.removeAttribute("data-bs-placement");
-        }
-        button.setAttribute("title", currentTitle);
-        button.classList.remove('code-copy-button-checked');
-      }, 1000);
-      // clear code selection
-      e.clearSelection();
-    }
-  
+
     const getTextToCopy = function(trigger) {
       const outerScaffold = trigger.parentElement.cloneNode(true);
       const codeEl = outerScaffold.querySelector('code');
@@ -105,13 +129,13 @@
       }
       return codeEl.innerText;
     }
-  
+
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
     });
-    clipboard.on('success', onCopySuccess);
-  
-    
+    clipboard.on('success', onCopySuccess('left'));
+
+
     if (window.document.getElementById('quarto-embedded-source-code-modal')) {
       <% /* %>
       // For code content inside modals, clipBoardJS needs to be initialized with a container option
@@ -121,7 +145,7 @@
         text: getTextToCopy,
         container: window.document.getElementById('quarto-embedded-source-code-modal')
       });
-      clipboardModal.on('success', onCopySuccess);
+      clipboardModal.on('success', onCopySuccess('left'));
     }
   
     <% } %>

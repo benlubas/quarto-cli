@@ -74,6 +74,7 @@ import {
   kCodeAnnotations,
   kCodeCopy,
   kComments,
+  kAnchorClick,
   kDocumentCss,
   kFootnotesHover,
   kGiscus,
@@ -317,6 +318,11 @@ export async function htmlFormatExtras(
   } else {
     options.anchors = format.metadata[kAnchorSections] || false;
   }
+  if (featureDefaults.anchorClick) {
+    options.anchorClick = format.metadata[kAnchorClick] || featureDefaults.anchorClick;
+  } else {
+    options.anchorClick = format.metadata[kAnchorClick] || "jump";
+  }
   if (featureDefaults.hoverCitations) {
     options.hoverCitations = format.metadata[kCitationsHover] !== false;
   } else {
@@ -471,7 +477,7 @@ export async function htmlFormatExtras(
   options.tippyOptions = tippyOptions;
 
   // clipboard.js if required
-  if (options.copyCode) {
+  if (options.copyCode || (options.anchors && options.anchorClick !== "jump")) {
     dependencies.push(clipboardDependency());
   }
 

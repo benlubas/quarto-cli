@@ -6,10 +6,17 @@
 
 import { Metadata } from "../../config/types.ts";
 
+enum AnchorClickOptions {
+  'jump',
+  'copy',
+  'copy-and-jump'
+}
+
 export interface HtmlFormatFeatureDefaults {
   tabby?: boolean;
   copyCode?: boolean;
   anchors?: boolean;
+  anchorClick?: AnchorClickOptions;
   hoverCitations?: boolean;
   hoverFootnotes?: boolean;
   figResponsive?: boolean;
